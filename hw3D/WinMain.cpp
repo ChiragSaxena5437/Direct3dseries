@@ -1,11 +1,30 @@
 #include <Windows.h>
+#include "WindowsMessageMap.h"
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
+	static WindowsMessageMap mm;
+	OutputDebugString( mm (msg, lParam, wParam).c_str());
+
+
 	switch (msg)
 	{
 	case WM_CLOSE:
 		PostQuitMessage(1); // I am keeping it as 1 not 0 and certainly not "69"
+		break;
+
+	case WM_KEYDOWN:
+		if (wParam == 'F')
+		{
+			SetWindowText(hWnd, "Respects");
+		}
+		break;
+
+	case WM_KEYUP:
+		if (wParam == 'F')
+		{
+			SetWindowText(hWnd, "DangerFeilds");
+		}
 		break;
 	}
 	return DefWindowProc(hWnd, msg, wParam, lParam);
@@ -18,7 +37,7 @@ int CALLBACK WinMain(
 	int			nCmdShow
 	)
 {
-	const auto pClassName = L"Hw3D";
+	const auto pClassName = "Hw3D";
 	//register window class
 	//for now I have forced all strings to be wide strings by prefixing with L
 	WNDCLASSEX wc = {0};
@@ -34,7 +53,7 @@ int CALLBACK WinMain(
 	wc.lpszMenuName = nullptr;
 	wc.lpszClassName = pClassName;
 	wc.hIconSm = nullptr;
-	const auto forhWndname = L"Happy Hard Window";
+	const auto forhWndname = "Happy Hard Window";
 	RegisterClassEx(&wc);
 	HWND hWnd = CreateWindowEx(
 		0, pClassName,
