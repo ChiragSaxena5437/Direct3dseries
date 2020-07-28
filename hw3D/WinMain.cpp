@@ -1,5 +1,6 @@
 #include <Windows.h>
 #include "WindowsMessageMap.h"
+#include <sstream>
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -23,19 +24,36 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_KEYUP:
 		if (wParam == 'F')
 		{
-			SetWindowText(hWnd, "DangerFeilds");
+			SetWindowText(hWnd, "DangerFeild");
 		}
 		break;
+	case WM_CHAR://message for text input case: sensitive
+	{
+
+		static std::string title;
+		title.push_back((char)wParam);
+		SetWindowText(hWnd, title.c_str());
+
+	}
+	case WM_LBUTTONDOWN:
+	{
+		POINTS pt = MAKEPOINTS(lParam);
+		std::ostringstream oss;
+		oss << "(" << pt.x << "," << pt.y << ")";
+		SetWindowText(hWnd, oss.str().c_str());
+	}
 	}
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
-int CALLBACK WinMain(
+int CALLBACK WinMain
+(
 	HINSTANCE	hInstance,
 	HINSTANCE	hPrevInstance,
 	LPSTR		lpCmdLine,
 	int			nCmdShow
-	)
+)
+
 {
 	const auto pClassName = "Hw3D";
 	//register window class
@@ -55,7 +73,8 @@ int CALLBACK WinMain(
 	wc.hIconSm = nullptr;
 	const auto forhWndname = "Happy Hard Window";
 	RegisterClassEx(&wc);
-	HWND hWnd = CreateWindowEx(
+	HWND hWnd = CreateWindowEx
+	(
 		0, pClassName,
 		forhWndname,
 		WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,
